@@ -8,12 +8,16 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
 let useHttps = process.env.USE_HTTPS === 'true';
 const botToken = process.env.TELEGRAM_BOT_TOKEN;
 
+
 app.use(express.static('public'));
 
+
 const webAppUrl = process.env.WEB_APP_URL || `${useHttps ? 'https' : 'http'}://localhost:${port}`;
+
 
 if (botToken) {
   const bot = new TelegramBot(botToken, { polling: true });
@@ -39,6 +43,7 @@ if (botToken) {
 }
 
 if (useHttps) {
+
   try {
     const keyPath = process.env.SSL_KEY_PATH || 'cert/localhost.key';
     const certPath = process.env.SSL_CERT_PATH || 'cert/localhost.crt';
@@ -56,6 +61,7 @@ if (useHttps) {
 }
 
 if (!useHttps) {
+
   app.listen(port, () => {
     console.log(`Web app served on http://localhost:${port}`);
   });
