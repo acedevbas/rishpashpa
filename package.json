@@ -4,11 +4,15 @@
   "description": "Telegram mini app reminder for exercises",
   "type": "module",
   "scripts": {
-    "start": "node scripts/inject-env.mjs && echo 'open public/index.html in browser'",
+    "start": "node scripts/inject-env.mjs && node server.js",
     "test": "echo 'no tests' && exit 0"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
+
+    "express": "^5.1.0",
+    "node-telegram-bot-api": "^0.66.0",
+
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }
