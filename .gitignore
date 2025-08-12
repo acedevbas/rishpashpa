@@ -1,3 +1,4 @@
 .env
 public/env.js
+public/app.js
 node_modules

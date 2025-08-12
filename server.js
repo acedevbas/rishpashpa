@@ -8,25 +8,34 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const useHttps = process.env.USE_HTTPS !== 'false';
+
+let useHttps = process.env.USE_HTTPS === 'true';
+const botToken = process.env.TELEGRAM_BOT_TOKEN;
+
 
 app.use(express.static('public'));
-app.use('/src', express.static('src'));
 
-const botToken = process.env.TELEGRAM_BOT_TOKEN;
-const webAppUrl =
-  process.env.WEB_APP_URL || `${useHttps ? 'https' : 'http'}://localhost:${port}`;
+
+const webAppUrl = process.env.WEB_APP_URL || `${useHttps ? 'https' : 'http'}://localhost:${port}`;
+
 
 if (botToken) {
   const bot = new TelegramBot(botToken, { polling: true });
   bot.onText(/\/start/, (msg) => {
-    bot.sendMessage(msg.chat.id, 'Открыть мини-тренировку', {
-      reply_markup: {
-        keyboard: [[{ text: 'Открыть Ришпашпу', web_app: { url: webAppUrl } }]],
-        resize_keyboard: true,
-        one_time_keyboard: true
-      }
-    });
+    if (useHttps) {
+      bot.sendMessage(msg.chat.id, 'Открыть мини-тренировку', {
+        reply_markup: {
+          keyboard: [[{ text: 'Открыть Ришпашпу', web_app: { url: webAppUrl } }]],
+          resize_keyboard: true,
+          one_time_keyboard: true
+        }
+      });
+    } else {
+      bot.sendMessage(
+        msg.chat.id,
+        'Мини‑приложение требует HTTPS. Запустите сервер с USE_HTTPS=true, чтобы открыть Ришпашпу.'
+      );
+    }
   });
   console.log('Telegram bot started.');
 } else {
@@ -34,16 +43,25 @@ if (botToken) {
 }
 
 if (useHttps) {
-  const keyPath = process.env.SSL_KEY_PATH || 'cert/localhost.key';
-  const certPath = process.env.SSL_CERT_PATH || 'cert/localhost.crt';
-  const ssl = {
-    key: fs.readFileSync(keyPath),
-    cert: fs.readFileSync(certPath)
-  };
-  https.createServer(ssl, app).listen(port, () => {
-    console.log(`Web app served on https://localhost:${port}`);
-  });
-} else {
+
+  try {
+    const keyPath = process.env.SSL_KEY_PATH || 'cert/localhost.key';
+    const certPath = process.env.SSL_CERT_PATH || 'cert/localhost.crt';
+    const ssl = {
+      key: fs.readFileSync(keyPath),
+      cert: fs.readFileSync(certPath)
+    };
+    https.createServer(ssl, app).listen(port, () => {
+      console.log(`Web app served on https://localhost:${port}`);
+    });
+  } catch (err) {
+    console.warn('Failed to start HTTPS server, falling back to HTTP:', err.message);
+    useHttps = false;
+  }
+}
+
+if (!useHttps) {
+
   app.listen(port, () => {
     console.log(`Web app served on http://localhost:${port}`);
   });
