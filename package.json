@@ -1,0 +1,15 @@
+{
+  "name": "rishpashpa",
+  "version": "1.0.0",
+  "description": "Telegram mini app reminder for exercises",
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/inject-env.mjs && echo 'open public/index.html in browser'",
+    "test": "echo 'no tests' && exit 0"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
