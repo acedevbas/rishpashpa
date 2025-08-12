@@ -24,7 +24,7 @@
     telegram.js         # обращение к Bot API
 / scripts
   inject-env.mjs   # генерация public/env.js из .env
-server.js          # Express-сервер и Telegram-бот
+
 .env.example       # пример файла переменных окружения
 package.json
 README.md
@@ -33,8 +33,10 @@ README.md
 ## Настройка окружения
 
 1. Скопируйте файл `.env.example` в `.env` и впишите токен вашего Telegram‑бота.
+
 2. Выполните `npm start`. Скрипт сгенерирует `public/env.js`, поднимет локальный сервер на `http://localhost:3000` и запустит бота.
 3. В Telegram отправьте своему боту команду `/start` и нажмите кнопку **Открыть Ришпашпу**, чтобы протестировать мини‑приложение.
+
 
 ## Примеры данных
 Настройки пользователя:
